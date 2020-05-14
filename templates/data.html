@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Welcome to MSHD!</title>
+    <link rel="stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="stylesheet" href="//at.alicdn.com/t/font_1091410_zwryxsfgd4.css">
+    <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+     <script>
+         var token_csrf = "{{ csrf_token }}";
+
+
+        function func(value){
+                alert(value);
+                $.ajax({
+                headers: {"X-CSRFToken": token_csrf},
+                type:"post",
+                url:"/test_url/",
+                /*contentType:"application/json; charset=UTF-8",
+                data:{'data':JSON.stringify(value)},*/
+                data:{"data1": value},
+                success:function(arg){
+                   /* $("#i3").val(arg)*/
+                }
+            })
+        }
+
+
+    </script>
+
+</head>
+<body>
+<header class="header">
+    <div class="header_right">
+        <ul>
+            <li class="show_list"> <a type="button" href="/" style="text-align:center;padding: 30px 30px 30px 30px;
+                line-height: 60px;text-decoration: none;border: none;color:#ffffff;">首页</a></li>
+            <li class="show_list" id="showList2">
+                <span>人员伤亡及失踪</span>
+                <ul class="move_list">
+                    <a type="button" name="101" href="/data/101" onclick="func(this.name)">死亡</a>
+                    <a type="button" name="102" href="/data/102" onclick="func(this.name)">受伤</a>
+                    <a type="button" name="103" href="/data/103" onclick="func(this.name)">失踪</a>
+                </ul>
+            </li>
+            <li class="show_list" id="showList3">
+                <span>房屋破坏</span>
+                <ul class="move_list">
+                    <a type="button" name="201" href="/data/201" onclick="func(this.name)">土木</a>
+                    <a type="button" name="fzgzxt.JSON" href="/data/fzgzxt.JSON" onclick="func(this.name)" >砖木</a>
+                    <a type="button" name="203" href="/data/203"onclick="func(this.name)" x >砖混</a>
+                     <a type="button" name="203" href="/data/203" onclick="func(this.name)">框架</a>
+                     <a type="button" name="203" href="/data/203" onclick="func(this.name)">其他</a>
+                </ul>
+            </li>
+            <li class="show_list">
+                <span>生命线工程灾情</span>
+                <ul class="move_list">
+                    <a type="button" name="301" href="/data/301" onclick="func(this.name)">交通</a>
+                    <a type="button" name="302" href="/data/302" onclick="func(this.name)">供水</a>
+                    <a type="button" name="304" href="/data/304" onclick="func(this.name)">输油</a>
+                    <a type="button" name="305" href="/data/305" onclick="func(this.name)">燃气</a>
+                    <a type="button" name="306" href="/data/306" onclick="func(this.name)">电力</a>
+                     <a type="button" name="202" href="/data/202" onclick="func(this.name)">通信</a>
+                     <a type="button" name="203" href="/data/203" onclick="func(this.name)">水利</a>
+                </ul>
+            </li>
+            <li class="show_list">
+                <span>次生灾害</span>
+                <ul class="move_list">
+                    <a type="button" name="401" href="/data/401" onclick="func(this.name)">崩塌</a>
+                    <a type="button" name="402" href="/data/402" onclick="func(this.name)">滑坡</a>
+                     <a type="button" name="203" href="/data/203" onclick="func(this.name)">泥石流</a>
+                     <a type="button" name="203" href="/data/203" onclick="func(this.name)">岩溶塌陷</a>
+                     <a type="button" name="203" href="/data/203" onclick="func(this.name)">地裂缝</a>
+                     <a type="button" name="203" href="/data/203" onclick="func(this.name)">地面沉降</a>
+                     <a type="button" name="203" href="/data/203" onclick="func(this.name)">其他</a>
+                </ul>
+            </li>
+            <li class="show_list" id="showList2">
+                <span>震情</span>
+                <ul class="move_list">
+                    <a type="button" name="101" href="/data/101" onclick="func(this.name)">基本</a>
+                    <a type="button" name="102" href="/data/102" onclick="func(this.name)">灾情预测</a>
+                </ul>
+            </li>
+        </ul>
+    </div>
+</header>
+    <div class="wrap">
+        <div id="left">
+             <form class="form-horizontal" method="POST" action="/upload_file/" enctype="multipart/form-data">
+                   <div class="file-box">
+                                <label class="file-btn" for="inputFile">上传json文件</label>
+                            <input type="file" name="myFile" id="inputFile" accept=".json" style="position:absolute;clip:rect(0 0 0 0);">
+                   </div>
+
+                   <p><select name="types">
+                                <option value="101">业务报送数据-公网</option>
+                                <option value="102">业务报送数据-北斗短报文</option>
+                                <option value="103">业务报送数据-卫星通讯</option>
+                                <option value="104">业务报送数据-卫星定位</option>
+                                <option value="105">业务报送数据-专用救灾</option>
+                                <option value="106">业务报送数据-其他</option>
+                                <option value="201">泛在感知数据-互联网</option>
+                                <option value="202">泛在感知数据-通信网</option>
+                                <option value="203">泛在感知数据-电网</option>
+                                <option value="204">泛在感知数据-其他</option>
+                                <option value="301">舆情感知数据-微博</option>
+                                <option value="302">舆情感知数据-博客</option>
+                                <option value="303">舆情感知数据-论坛</option>
+                                <option value="304">舆情感知数据-微信</option>
+                                <option value="304">舆情感知数据-其他</option>
+                                <option value="401">承载体基础数据-川滇</option>
+                                <option value="402">承载体基础数据-其他</option>
+                            </select></p>
+                            <button class="submit_btn" type="submit" class="btn">提交</button>
+                </form>
+
+        </div>
+        <div id="right">
+            <div style="margin:0 auto; width:800px; height:500px;text-align:center;color:whitesmoke;">
+                <h4>MSHD_commdisaster:{{type}}</h4>
+                    <table id="id_list_table">
+                        <tr>
+                        <th>Code</th><th>Date</th><th>Location</th><th>Type</th><th>Status</th><th>Picture</th><th>Note</th><th>ReportingUnit</th>
+                        </tr>
+                        {% for item in items %}
+                            <tr>
+                                <td style="width: 200px">{{item.1}}</td>
+                                <td style="width: 100px">{{item.2}} </td>
+                                <td style="width: 300px">{{item.3}}</td>
+                                <td style="width: 70px">{{item.4}}</td>
+                                <td style="width: 70px">{{item.5}}</td>
+                                <td>{{item.6}}</td>
+                                <td>{{item.7}}</td>
+                                <td>{{item.8}}</td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+            </div>
+
+        </div>
+    </div>
+
+
+</body>
+</html>

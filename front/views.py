@@ -10,6 +10,7 @@ from utils import restful
 def index(request):
     return render(request, "index.html")
 
+#啦啦啦啦啦啦啦，我添加了一行注释
 
 @csrf_exempt
 def upload_file(request):

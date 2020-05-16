@@ -6,6 +6,7 @@ from django.views.decorators.csrf import csrf_exempt
 import sqlite3
 import xlrd
 from utils import restful
+import datetime,time
 
 def index(request):
     return render(request, "index.html")
@@ -129,7 +130,7 @@ def databaseOperation(code, datas,sequenceNumber):
                                            Type=data["Type"], Grade=data["Grade"], Picture=data["Picture"],
                                            Note=data["Note"], ReportingUnit=data["ReportingUnit"],
                                            SequenceNumber=sequenceNumber[i])
-        i=i+1
+        i==i+1
     # 将字典封装成json文件
     json_file = json.dumps(datas)
     # 保存json文件
@@ -174,3 +175,46 @@ def data(request):
     cur.close()
     conn.close()
     return render(request, 'data.html', {'items': datas,'type': list[2]})
+
+
+# 用户访问 /request 网页并传入 code disasterType  o_URL requestunit
+def data_request(request):
+    # 获取问号后传递的参数
+    code = request.GET.get("code")
+    disaster_type = request.GET.get("disasterType")
+    o_url = request.GET.get("o_url")
+    request_unit = request.GET.get("requestUnit")
+    # 获取当前时间，以年-月-日-时-分格式显示
+    now_time = datetime.datetime.now()
+    str_time = now_time.strftime("%Y-%m-%d %X")
+    tup_time = time.strptime(str_time, "%Y-%m-%d %X")
+    time_str = str(tup_time.tm_year) + "-" + str(tup_time.tm_mon) +"-"+str(tup_time.tm_mday)+" "+ str(tup_time.tm_hour) + ":" +str(tup_time.tm_min)
+    # 将记录写入数据库
+    models.requestList.objects.create(code=code, disasterType=disaster_type,
+                                      status=0, o_URL=o_url,requestunit=request_unit,
+                                      date=time_str)
+    # 依据disasterType查找数据并返回
+    if (disaster_type == '336'):
+        table_name =  "front_commdisaster"
+    if (disaster_type == '111'):
+        print("暂时没有这个表")
+    if (disaster_type == '221'):
+        print("暂时没有这个表")
+    if (disaster_type == '441'):
+        print("暂时没有这个表")
+    if (disaster_type== '552'):
+        print("暂时没有这个表")
+
+    conn = sqlite3.connect("db.sqlite3")
+    cur = conn.cursor()
+    sql_word = ('select * from', table_name,'where code =', code)
+    sql =' '.join(sql_word)
+    cur.execute(sql)
+    request_data = cur.fetchall()  # 搜取所有结果
+    cur.close()
+    conn.close()
+    # json格式返回前端
+    response = HttpResponse(json.dumps(request_data),
+                            content_type="application/json")
+    return response
+

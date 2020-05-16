@@ -25,24 +25,28 @@ def upload_file(request):
     f = open(uploadFileName, encoding='utf-8')
     data_json = json.load(f)
     code = 0
+    sequenceNum =[]
     data = xlrd.open_workbook('shandongdata.xlsx', encoding_override='utf-8')  # 读取表
     for dataj in data_json:
-        DisasterType = TransData(dataj["Code"])  # 解码ID，返回后七位的灾情信息码中的大类代码和子类代码
+        DisasterType,sqNumber = TransData(dataj["Code"])  # 解码ID，返回后七位的灾情信息码中的大类代码和子类代码
         code = DisasterType
-        dataj["ReportingUnit"] = MScode + dataj["ReportingUnit"]  # 将编码MSCode加在reportingunit字段中
+        sequenceNum.append(sqNumber)
+        dataj["ReportingUnit"] = MScode+ "-" + dataj["ReportingUnit"]  # 将编码MSCode加在reportingunit字段中
         disInfo = dataj["Code"]  # 获取19位编码
         dataj["Location"] = TransDataAddress(data,disInfo[0:12]) # 获取19位ID的前十二位编码，即基础地理信息码  # 获取19位ID的前十二位编码，即基础地理信息码
         print("DisasterType:"+DisasterType)
         print("data:"+str(dataj))
-    databaseOperation(code, data_json)
+    databaseOperation(code, data_json,sequenceNum)
     print('ok')
     return restful.result(message="upload success", data={"MScode": MScode, "uploadFileName": uploadFileObj.name})
+
 
 
 # 解析19位灾情信息编码
 def TransData(IDNUmber):
     if(CheckIDNumber(IDNUmber)):
         disInfo=IDNUmber[-7:] #获取灾情信息编码，从倒数第七个字符到结尾
+        sequenceNumber = disInfo[-4:]
         fdisInfo=disInfo[0] #获取大类代码
         sdisInfo=disInfo[1:3] #获取子类代码
         print('灾情信息编码：'+disInfo+' 大类代码：'+fdisInfo+' 子类代码：'+sdisInfo)
@@ -65,7 +69,7 @@ def TransData(IDNUmber):
             dbTableNmae="000"
             dbTableType=fdisInfo+sdisInfo
         print(dbTableNmae+dbTableType)
-        return dbTableType # 返回灾情信息编码的大类代码+子类代码
+        return dbTableType,sequenceNumber# 返回灾情信息编码的大类代码+子类代码
 
 
 # 解析19位ID编码的前12位，得到具体的地理位置信息
@@ -97,7 +101,7 @@ def test_url(request):
 
 
 #数据表操作和文件的存储
-def databaseOperation(code, datas):
+def databaseOperation(code, datas,sequenceNumber):
     # 找到解析的336编码，不同编码不同目录
     if (code == '336'):
         fileName = '336/CommDisaster.json'
@@ -119,10 +123,13 @@ def databaseOperation(code, datas):
     cur.execute("UPDATE sqlite_sequence set seq=0 where name='MSHD_commdisaster';")
     conn.commit()
     # 将数据存入数据库
+    i=0
     for data in datas:
         models.CommDisaster.objects.create(Code=data["Code"], Date=data["Date"], Location=data["Location"],
                                            Type=data["Type"], Grade=data["Grade"], Picture=data["Picture"],
-                                           Note=data["Note"], ReportingUnit=data["ReportingUnit"])
+                                           Note=data["Note"], ReportingUnit=data["ReportingUnit"],
+                                           SequenceNumber=sequenceNumber[i])
+        i==i+1
     # 将字典封装成json文件
     json_file = json.dumps(datas)
     # 保存json文件

@@ -189,8 +189,32 @@ def data_request(request):
     str_time = now_time.strftime("%Y-%m-%d %X")
     tup_time = time.strptime(str_time, "%Y-%m-%d %X")
     time_str = str(tup_time.tm_year) + "-" + str(tup_time.tm_mon) +"-"+str(tup_time.tm_mday)+" "+ str(tup_time.tm_hour) + ":" +str(tup_time.tm_min)
+    # 将记录写入数据库
     models.requestList.objects.create(code=code, disasterType=disaster_type,
                                       status=0, o_URL=o_url,requestunit=request_unit,
                                       date=time_str)
-    return HttpResponse(code)
+    # 依据disasterType查找数据并返回
+    if (disaster_type == '336'):
+        table_name =  "front_commdisaster"
+    if (disaster_type == '111'):
+        print("暂时没有这个表")
+    if (disaster_type == '221'):
+        print("暂时没有这个表")
+    if (disaster_type == '441'):
+        print("暂时没有这个表")
+    if (disaster_type== '552'):
+        print("暂时没有这个表")
+
+    conn = sqlite3.connect("db.sqlite3")
+    cur = conn.cursor()
+    sql_word = ('select * from', table_name,'where code =', code)
+    sql =' '.join(sql_word)
+    cur.execute(sql)
+    request_data = cur.fetchall()  # 搜取所有结果
+    cur.close()
+    conn.close()
+    # json格式返回前端
+    response = HttpResponse(json.dumps(request_data),
+                            content_type="application/json")
+    return response
 

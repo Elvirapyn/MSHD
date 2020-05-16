@@ -6,6 +6,7 @@ from django.views.decorators.csrf import csrf_exempt
 import sqlite3
 import xlrd
 from utils import restful
+import datetime,time
 
 def index(request):
     return render(request, "index.html")
@@ -176,5 +177,20 @@ def data(request):
     return render(request, 'data.html', {'items': datas,'type': list[2]})
 
 
-# 用户访问 /request 网页并传入 id disasterType  o_URL requestunit
-# def data_request(request):
+# 用户访问 /request 网页并传入 code disasterType  o_URL requestunit
+def data_request(request):
+    # 获取问号后传递的参数
+    code = request.GET.get("code")
+    disaster_type = request.GET.get("disasterType")
+    o_url = request.GET.get("o_url")
+    request_unit = request.GET.get("requestUnit")
+    # 获取当前时间，以年-月-日-时-分格式显示
+    now_time = datetime.datetime.now()
+    str_time = now_time.strftime("%Y-%m-%d %X")
+    tup_time = time.strptime(str_time, "%Y-%m-%d %X")
+    time_str = str(tup_time.tm_year) + "-" + str(tup_time.tm_mon) +"-"+str(tup_time.tm_mday)+" "+ str(tup_time.tm_hour) + ":" +str(tup_time.tm_min)
+    models.requestList.objects.create(code=code, disasterType=disaster_type,
+                                      status=0, o_URL=o_url,requestunit=request_unit,
+                                      date=time_str)
+    return HttpResponse(code)
+

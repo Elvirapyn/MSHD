@@ -130,7 +130,7 @@ def databaseOperation(code, datas,sequenceNumber):
                                            Type=data["Type"], Grade=data["Grade"], Picture=data["Picture"],
                                            Note=data["Note"], ReportingUnit=data["ReportingUnit"],
                                            SequenceNumber=sequenceNumber[i])
-        i==i+1
+        i=i+1
     # 将字典封装成json文件
     json_file = json.dumps(datas)
     # 保存json文件

@@ -20,10 +20,11 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.conf.urls import url
 
 urlpatterns = [
-    # path('', MSHD.views.index , name = 'index'),
+
     url(r'^$', front.views.index),
     url(r'^test_url/', front.views.test_url),
-    url(r'^upload_file/', front.views.upload_file),
+    path('192.168.86.100/upload_file/commDisater.json', front.views.upload_file),
+    # url(r'^upload_file/commDisater.json', front.views.upload_file),
     url(r'^data/*', front.views.data, name='data'),
 ]
 

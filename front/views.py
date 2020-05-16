@@ -167,3 +167,7 @@ def data(request):
     cur.close()
     conn.close()
     return render(request, 'data.html', {'items': datas,'type': list[2]})
+
+
+# 用户访问 /request 网页并传入 id disasterType  o_URL requestunit
+# def data_request(request):

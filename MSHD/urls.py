@@ -25,6 +25,7 @@ urlpatterns = [
     url(r'^test_url/', front.views.test_url),
     url(r'^upload_file/', front.views.upload_file),
     url(r'^data/*', front.views.data, name='data'),
+    url(r'^request/', front.views.data_request)
 ]
 
 urlpatterns += staticfiles_urlpatterns()

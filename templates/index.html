@@ -117,7 +117,10 @@
                             </select></p>
                             <button class="submit_btn" type="submit" class="btn">提交</button>
                 </form>
-
+                <form class="form-horizontal" method="POST" action="/status.html/" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <button class="submit_btn" type="submit" class="btn">查看请求信息</button>
+                </form>
         </div>
         <div id="right">
 

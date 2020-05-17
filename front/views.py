@@ -224,30 +224,52 @@ def data_request(request):
 def status(request):
     conn = sqlite3.connect("db.sqlite3")
     cur = conn.cursor()
-    sql_word = '''select * from `front_requestList`''' # 显示全部数据
+    sql_word = "select * from `front_requestList`"  # 显示全部数据
 
     cur.execute(sql_word)
     request_data = cur.fetchall()  # 搜取所有结果
     cur.close()
     conn.close()
+
+    # 进行筛选，已发送数据、未发送数据、发送数据
+    if request.POST:
+        status = request.POST.get('status',None)
+        if (status == "已处理"):   # 已发送数据
+            sql_word = "select * from `front_requestList` where status = 1 "
+            conn = sqlite3.connect("db.sqlite3")
+            cur = conn.cursor()
+            cur.execute(sql_word)
+            request_data = cur.fetchall()  # 搜取所有结果
+            cur.close()
+            conn.close()
+            response = HttpResponse(json.dumps(request_data))
+            print(response)
+
+        if (status == "未处理"):  # 未发送数据
+            sql_word = "select * from `front_requestList` where status = 0 "
+            conn = sqlite3.connect("db.sqlite3")
+            cur = conn.cursor()
+            cur.execute(sql_word)
+            request_data = cur.fetchall()  # 搜取所有结果
+            cur.close()
+            conn.close()
+            response = HttpResponse(json.dumps(request_data))
+            print(response)
+
+        if (status == "发送数据"):  # 发送数据，更改status的值
+            sql_word1 = "update front_requestList set status = 1 where status = 0 "    # 更新数据
+            conn = sqlite3.connect("db.sqlite3")
+            cur = conn.cursor()
+            cur.execute(sql_word1)
+            conn.commit()
+            print("更新成功")
+            sql_word2 = "select * from `front_requestList` where status = 0 "  # 显示剩余的status = 0的数据
+            cur.execute(sql_word2)
+            request_data = cur.fetchall()  # 搜取所有结果
+            print(request_data)
+            cur.close()
+            conn.close()
+            response = HttpResponse(json.dumps(request_data))
+            print(response)
 
     return render(request,'status.html', {'items': request_data})
-
-# 进行筛选，已发送数据、未发送数据、发送数据
-def choose_status(request):
-    status = request.GET['status']
-    if (status == '1'):   # 已发送数据
-        sql_word = '''select * from `front_requestList` where status = '1' '''
-    if (status == '0'):  # 未发送数据
-        sql_word = '''select * from `front_requestList` where status = '0' '''
-    if (status == '2'):  # 发送数据，更改status的值
-       sql_word = '''update front_requestList set status = '1' where status = '0' '''
-
-    conn = sqlite3.connect("db.sqlite3")
-    cur = conn.cursor()
-    cur.execute(sql_word)
-    request_data = cur.fetchall()  # 搜取所有结果
-    cur.close()
-    conn.close()
-
-    return render(request, 'status.html', {'items': request_data})

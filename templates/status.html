@@ -126,27 +126,36 @@
                             <h4>MSHD_DisasterResquest:{{type}}</h4>
                             <table id="id_list_table">
                                 <tr>
-                                <th>code</th><th>date</th><th>requestunit</th><th>disasterType</th><th>o_URL</th><th>status</th>
+                                <th>date</th><th>disasterType</th><th>code</th><th>o_URL</th><th>requestunit</th><th>status</th><th>sendMessage</th>
                                 </tr>
                                 {% for item in items %}
 
                                         <tr>
                                             <td style="width: 200px">{{item.1}}</td>
-                                            <td style="width: 100px">{{item.2}} </td>
+                                            <td style="width: 70px">{{item.2}} </td>
                                             <td style="width: 300px">{{item.3}}</td>
-                                            <td style="width: 70px">{{item.4}}</td>
+                                            <td style="width: 100px">{{item.4}}</td>
                                             <td style="width: 200px">{{item.5}}</td>
-                                            <td>{{item.6}}</td>
-                                        </tr>
+                                            <td style="width: 100px">{{item.6}}</td>
+                                            <td style="width: 100px">
+                                                {% if item.6 == '0' %}
+                                                    <form class="form-horizontal" method="POST" action="/status" enctype="multipart/form-data">
+                                                        {% csrf_token %}
+                                                        <input type="submit" class="btn" name="status" value="发送数据">
+                                                    </form>
+                                                {% else %}
+                                                    <p>OK</p>
+                                                {% endif %}
+                                            </td>
 
+                                        </tr>
                                 {% endfor %}
                             </table>
 
-                            <form class="form-horizontal" method="POST" action="/choose_status" enctype="multipart/form-data">
+                            <form class="form-horizontal" method="POST" action="/status" enctype="multipart/form-data">
                                 {% csrf_token %}
-                                <input type="submit" class="btn" name="status" value="1">已发送</button>
-                                <input type="submit" class="btn" name="status" value="0">未发送</button>
-                                <input type="submit" class="btn" name="status" value="2">发送数据</button>
+                                <input type="submit" class="btn" name="status" value="已处理">
+                                <input type="submit" class="btn" name="status" value="未处理">
                             </form>
                     </div>
                 </div>

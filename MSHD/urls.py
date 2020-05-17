@@ -26,7 +26,10 @@ urlpatterns = [
     path('192.168.86.100/upload_file/commDisater.json', front.views.upload_file),
     # url(r'^upload_file/commDisater.json', front.views.upload_file),
     url(r'^data/*', front.views.data, name='data'),
-    url(r'^request/', front.views.data_request)
+    url(r'^request/', front.views.data_request),
+    path('status.html/',front.views.status),
+    url(r'^status/$',front.views.status, name='status'),
+    url(r'^status/$', front.views.choose_status, name='status'),
 ]
 
 urlpatterns += staticfiles_urlpatterns()

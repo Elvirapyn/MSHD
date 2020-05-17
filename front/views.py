@@ -178,6 +178,7 @@ def data(request):
 
 
 # 用户访问 /request 网页并传入 code disasterType  o_URL requestunit
+# ex: http://localhost:8000/request/?code=3700000000003366789&disasterType=336&o_url=168.336.222&requestUnit=水星水星
 def data_request(request):
     # 获取问号后传递的参数
     code = request.GET.get("code")
@@ -218,3 +219,35 @@ def data_request(request):
                             content_type="application/json")
     return response
 
+
+# 选择查看已发送还是未发送
+def status(request):
+    conn = sqlite3.connect("db.sqlite3")
+    cur = conn.cursor()
+    sql_word = '''select * from `front_requestList`''' # 显示全部数据
+
+    cur.execute(sql_word)
+    request_data = cur.fetchall()  # 搜取所有结果
+    cur.close()
+    conn.close()
+
+    return render(request,'status.html', {'items': request_data})
+
+# 进行筛选，已发送数据、未发送数据、发送数据
+def choose_status(request):
+    status = request.GET['status']
+    if (status == '1'):   # 已发送数据
+        sql_word = '''select * from `front_requestList` where status = '1' '''
+    if (status == '0'):  # 未发送数据
+        sql_word = '''select * from `front_requestList` where status = '0' '''
+    if (status == '2'):  # 发送数据，更改status的值
+       sql_word = '''update front_requestList set status = '1' where status = '0' '''
+
+    conn = sqlite3.connect("db.sqlite3")
+    cur = conn.cursor()
+    cur.execute(sql_word)
+    request_data = cur.fetchall()  # 搜取所有结果
+    cur.close()
+    conn.close()
+
+    return render(request, 'status.html', {'items': request_data})

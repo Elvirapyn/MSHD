@@ -13,6 +13,7 @@ def index(request):
 
 #啦啦啦啦啦啦啦，我添加了一行注释
 
+
 @csrf_exempt
 def upload_file(request):
     uploadFileObj = request.FILES['myFile']

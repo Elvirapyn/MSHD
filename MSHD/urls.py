@@ -23,7 +23,7 @@ urlpatterns = [
 
     url(r'^$', front.views.index),
     url(r'^test_url/', front.views.test_url),
-    path('192.168.86.100/upload_file/commDisater.json', front.views.upload_file),
+    path('upload_file/', front.views.upload_file),
     # url(r'^upload_file/commDisater.json', front.views.upload_file),
     url(r'^data/*', front.views.data, name='data'),
     url(r'^request/', front.views.data_request),

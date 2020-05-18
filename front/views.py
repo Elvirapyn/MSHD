@@ -167,15 +167,61 @@ def CheckIDNumber(IDNumber):
 
 #将json文件传到前段html文件中
 def data(request):
-    list=request.path_info.split('/')
-    conn = sqlite3.connect("db.sqlite3")
-    cur = conn.cursor()
-    sql = "select * from front_commdisaster"  # MSHD_commdisaster为表名
-    cur.execute(sql)
-    datas = cur.fetchall()  # 搜取所有结果
-    cur.close()
-    conn.close()
-    return render(request, 'data.html', {'items': datas,'type': list[2]})
+    print(1111111111111)
+    if request.method == "GET":
+        list = request.path_info.split('/')
+        conn = sqlite3.connect("db.sqlite3")
+        cur = conn.cursor()
+        sql = "select * from front_commdisaster"  # MSHD_commdisaster为表名
+        cur.execute(sql)
+        datas = cur.fetchall()  # 搜取所有结果
+        cur.close()
+        conn.close()
+        return render(request, 'data.html', {'items': datas, 'type': list[2]})
+    if request.method == "POST" and request.POST.get("submit") == "删除":
+        # id=request.POST.get("submit")
+        print(2222222222)
+        id = request.POST.get("select")
+        print(id)
+        conn = sqlite3.connect("db.sqlite3")
+        cur = conn.cursor()
+        # sql = "select * from front_commdisaster"
+        sql = "delete  from front_commdisaster where id=" + id  # MSHD_commdisaster为表名
+        cur.execute(sql)
+        sql2 = "select * from front_commdisaster"
+        cur.execute(sql2)
+        datas = cur.fetchall()  # 搜取所有结果
+        conn.commit()
+        cur.close()
+        conn.close()
+        return render(request, 'data.html', {'items': datas})
+    if request.method == "POST" and request.POST.get("submit") == "提交修改":
+        # print(333333)
+        # id = request.POST.get("select")
+        # print(id)
+
+        location = request.POST.get("23")
+        print(location)
+        conn = sqlite3.connect("db.sqlite3")
+        cur = conn.cursor()
+        sql = "select * from front_commdisaster"
+        # sql = "delete  from front_commdisaster where id=" + id # MSHD_commdisaster为表名
+        cur.execute(sql)
+        datas = cur.fetchall()  # 搜取所有结果
+        for data in datas:
+            print(data)
+            print(data[0])
+            location = "\"" + request.POST.get(str(data[0])) + "\""
+            grade = request.POST.get(str(data[1]))
+            sql1 = "UPDATE front_commdisaster SET Location=" + str(location) + ",Grade=" + str(
+                grade) + " WHERE id = " + str(data[0])
+            cur.execute(sql1)
+        cur.execute(sql)
+        datas = cur.fetchall()  # 搜取所有结果
+        conn.commit()
+        cur.close()
+        conn.close()
+        return render(request, 'data.html', {'items': datas})
 
 
 # 用户访问 /request 网页并传入 code disasterType  o_URL requestunit

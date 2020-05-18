@@ -119,25 +119,35 @@
 
         </div>
         <div id="right">
-            <div style="margin:0 auto; width:800px; height:500px;text-align:center;color:whitesmoke;">
+             <div style="margin:0 auto; width:800px; height:500px;text-align:center;color:whitesmoke;">
                 <h4>MSHD_commdisaster:{{type}}</h4>
+                <form method="POST" action="/data" >
+                {% csrf_token %}
                     <table id="id_list_table">
                         <tr>
-                        <th>Code</th><th>Date</th><th>Location</th><th>Type</th><th>Status</th><th>Picture</th><th>Note</th><th>ReportingUnit</th>
+                        <th></th><th>id</th><th>Code</th><th>Date</th><th>Location</th><th>Type</th><th>SequenceNumber</th><th>Grade</th><th>Picture</th><th>Note</th><th>ReportingUnit</th>
                         </tr>
+
                         {% for item in items %}
                             <tr>
+                                <td><input name="select" type="radio" value="{{item.0}}"/></td>
+                                <td style="width: 200px">{{item.0}}</td>
                                 <td style="width: 200px">{{item.1}}</td>
-                                <td style="width: 100px">{{item.2}} </td>
-                                <td style="width: 300px">{{item.3}}</td>
+                                <td style="width: 300px">{{item.2}}</td>
+                                <td style="width: 100px"><input name="{{ item.0 }}" type="text" value="{{item.3}}"/></td>
                                 <td style="width: 70px">{{item.4}}</td>
                                 <td style="width: 70px">{{item.5}}</td>
-                                <td>{{item.6}}</td>
-                                <td>{{item.7}}</td>
+                                <td><input name="{{ item.1 }}" type="text" value="{{item.6}}"/></td>
+                                <td><img src="{{item.7}}" width="200" height="200"></td>
                                 <td>{{item.8}}</td>
+                                <td>{{item.9}}</td>
                             </tr>
                         {% endfor %}
                     </table>
+                    <input name="submit" class="submit_btn" type="submit" value="删除"/>
+                    <input name="submit" class="submit_btn" type="submit" value="提交修改"/>
+                </form>
+
             </div>
 
         </div>
